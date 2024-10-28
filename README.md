@@ -63,7 +63,7 @@
 └── kubernetes-deployment.yaml
 </pre>
 
-## <center>Лицензия</center>
+## <center>Связанное</center>
 <p align="center">
-    Этот проект лицензирован под <a href="LICENSE">MIT License</a>.
+    <a href="https://github.com/Antongo22/DockerMiniApps">Этот же проект на docker-compose</a>.
 </p>
