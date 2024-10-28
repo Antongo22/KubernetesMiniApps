@@ -1,0 +1,112 @@
+# Deployment и Service для factorial_api
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: factorial-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: factorial-api
+  template:
+    metadata:
+      labels:
+        app: factorial-api
+    spec:
+      containers:
+        - name: factorial-api
+          image: factorial_api:latest
+          imagePullPolicy: IfNotPresent    
+          ports:
+            - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: factorial-api-service
+spec:
+  selector:
+    app: factorial-api
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
+
+# Deployment и Service для fibonacci_api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fibonacci-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fibonacci-api
+  template:
+    metadata:
+      labels:
+        app: fibonacci-api
+    spec:
+      containers:
+        - name: fibonacci-api
+          image: fibonacci_api:latest
+          imagePullPolicy: IfNotPresent    
+          ports:
+            - containerPort: 8001
+          env:
+            - name: FACTORIAL_API_URL
+              value: "http://factorial-api-service:8000/factorial/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fibonacci-api-service
+spec:
+  selector:
+    app: fibonacci-api
+  ports:
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001
+  type: ClusterIP
+
+# Deployment и Service для user_interface
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-interface-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-interface
+  template:
+    metadata:
+      labels:
+        app: user-interface
+    spec:
+      containers:
+        - name: user-interface
+          image: user_interface:latest
+          imagePullPolicy: IfNotPresent    
+          ports:
+            - containerPort: 8002
+          env:
+            - name: FIBONACCI_API_URL
+              value: "http://fibonacci-api-service:8001/fibonacci/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-interface-service
+spec:
+  selector:
+    app: user-interface
+  ports:
+    - protocol: TCP
+      port: 8002
+      targetPort: 8002
+  type: LoadBalancer
