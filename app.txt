@@ -1,3 +1,0 @@
-docker-compose up --build - сборка
-docker ps - проверка
-docker-compose down - остановка контейнера
